@@ -1,18 +1,13 @@
-﻿using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SporKulubuYS_Service.Model;
 
 namespace SporKulubuYS_Service.Core
 {
+    /// <summary>Sporcuların hangi branşlarda olduğunu yönetir (çoka-çok ilişki).</summary>
     public interface ISporcuBransService
     {
         void Ekle(SporcuBrans sporcuBrans);
-        void Sil(int SporcuBransId);
-        void Güncelle(SporcuBrans sporcuBrans);
-        SporcuBrans Getir(int SporcuBransId);
+        void Sil(int sporcuBransId);
         List<SporcuBrans> Listele();
     }
 
@@ -27,40 +22,43 @@ namespace SporKulubuYS_Service.Core
 
         public void Ekle(SporcuBrans sporcuBrans)
         {
+            Dogrulama.Secili(sporcuBrans.SporcuId, "bir sporcu");
+            Dogrulama.Secili(sporcuBrans.BransId, "bir branş");
+
+            if (!db.Sporcular.Any(s => s.SporcuId == sporcuBrans.SporcuId))
+                throw new KuralHatasi("Seçilen sporcu bulunamadı.");
+
+            if (!db.Branslar.Any(b => b.BransId == sporcuBrans.BransId))
+                throw new KuralHatasi("Seçilen branş bulunamadı.");
+
+            bool zatenKayitli = db.SporcuBranslar.Any(sb =>
+                sb.SporcuId == sporcuBrans.SporcuId && sb.BransId == sporcuBrans.BransId);
+            if (zatenKayitli)
+                throw new KuralHatasi("Bu sporcu bu branşa zaten kayıtlı.");
+
             db.SporcuBranslar.Add(sporcuBrans);
             db.SaveChanges();
         }
 
-        public void Sil(int SporcuBransId)
+        public void Sil(int sporcuBransId)
         {
-            var sporcuBrans = db.SporcuBranslar.Find(SporcuBransId);
-            if (sporcuBrans != null)
-            {
-                db.SporcuBranslar.Remove(sporcuBrans);
-                db.SaveChanges();
-            }
-        }
+            Dogrulama.Secili(sporcuBransId, "listeden bir kayıt");
 
-        public void Güncelle(SporcuBrans sporcuBrans)
-        {
-            var eskiKayit = db.SporcuBranslar.Find(sporcuBrans.SporcuBransId);
+            var kayit = db.SporcuBranslar.Find(sporcuBransId)
+                        ?? throw new KuralHatasi("Kayıt bulunamadı.");
 
-            eskiKayit.SporcuId = sporcuBrans.SporcuId;
-            eskiKayit.BransId = sporcuBrans.BransId;
-
-            db.SporcuBranslar.Update(eskiKayit);
+            db.SporcuBranslar.Remove(kayit);
             db.SaveChanges();
-        }
-
-        public SporcuBrans Getir(int SporcuBransId)
-        {
-            var sporcuBrans = db.SporcuBranslar.Find(SporcuBransId);
-            return sporcuBrans;
         }
 
         public List<SporcuBrans> Listele()
         {
-            return db.SporcuBranslar.ToList();
+            return db.SporcuBranslar
+                .Include(sb => sb.Sporcu)
+                .Include(sb => sb.Brans)
+                .OrderBy(sb => sb.Brans.BransAd)
+                .ThenBy(sb => sb.Sporcu.SporcuAd)
+                .ToList();
         }
     }
 }

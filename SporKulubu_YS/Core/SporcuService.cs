@@ -1,19 +1,15 @@
-﻿using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SporKulubuYS_Service.Model;
 
 namespace SporKulubuYS_Service.Core
 {
     public interface ISporcuService
     {
         void Ekle(Sporcu sporcu);
-        void Sil(int SporcuId);
-        void Güncelle(Sporcu sporcu);
-        Sporcu Getir(int SporcuId);
-        List<Sporcu> Listele();
+        void Sil(int sporcuId);
+        void Guncelle(Sporcu sporcu);
+        Sporcu? Getir(int sporcuId);
+        List<Sporcu> Listele(string? arama = null);
     }
 
     public class SporcuService : ISporcuService
@@ -27,23 +23,31 @@ namespace SporKulubuYS_Service.Core
 
         public void Ekle(Sporcu sporcu)
         {
+            Dogrula(sporcu);
+
             db.Sporcular.Add(sporcu);
             db.SaveChanges();
         }
 
-        public void Sil(int SporcuId)
+        /// <summary>Sporcu silinince branş kayıtları da (SporcuBranslar) veritabanı tarafından silinir.</summary>
+        public void Sil(int sporcuId)
         {
-            var sporcu = db.Sporcular.Find(SporcuId);
-            if (sporcu != null)
-            {
-                db.Sporcular.Remove(sporcu);
-                db.SaveChanges();
-            }
+            Dogrulama.Secili(sporcuId, "listeden bir sporcu");
+
+            var sporcu = db.Sporcular.Find(sporcuId)
+                         ?? throw new KuralHatasi("Sporcu bulunamadı.");
+
+            db.Sporcular.Remove(sporcu);
+            db.SaveChanges();
         }
 
-        public void Güncelle(Sporcu sporcu)
+        public void Guncelle(Sporcu sporcu)
         {
-            var eskiKayit = db.Sporcular.Find(sporcu.SporcuId);
+            Dogrulama.Secili(sporcu.SporcuId, "listeden bir sporcu");
+            Dogrula(sporcu);
+
+            var eskiKayit = db.Sporcular.Find(sporcu.SporcuId)
+                            ?? throw new KuralHatasi("Sporcu bulunamadı.");
 
             eskiKayit.SporcuAd = sporcu.SporcuAd;
             eskiKayit.SporcuSoyad = sporcu.SporcuSoyad;
@@ -51,21 +55,42 @@ namespace SporKulubuYS_Service.Core
             eskiKayit.Cinsiyet = sporcu.Cinsiyet;
             eskiKayit.Eposta = sporcu.Eposta;
 
-            db.Sporcular.Update(eskiKayit);
             db.SaveChanges();
         }
 
-        public Sporcu Getir(int SporcuId)
+        public Sporcu? Getir(int sporcuId)
         {
-            var sporcu = db.Sporcular.Find(SporcuId);
-            return sporcu;
+            return db.Sporcular.Find(sporcuId);
         }
 
-        public List<Sporcu> Listele()
+        /// <summary>Sporcuları branşlarıyla birlikte getirir; arama ad, soyad ve e-postada yapılır.</summary>
+        public List<Sporcu> Listele(string? arama = null)
         {
-            return db.Sporcular.ToList();
+            IQueryable<Sporcu> sorgu = db.Sporcular
+                .Include(s => s.SporcuBranslar)
+                .ThenInclude(sb => sb.Brans);
+
+            if (!string.IsNullOrWhiteSpace(arama))
+            {
+                string kelime = arama.Trim();
+                sorgu = sorgu.Where(s => s.SporcuAd.Contains(kelime)
+                                      || s.SporcuSoyad.Contains(kelime)
+                                      || s.Eposta.Contains(kelime));
+            }
+
+            return sorgu.OrderBy(s => s.SporcuAd).ThenBy(s => s.SporcuSoyad).ToList();
+        }
+
+        private void Dogrula(Sporcu sporcu)
+        {
+            sporcu.SporcuAd = Dogrulama.Isim(sporcu.SporcuAd, "Ad");
+            sporcu.SporcuSoyad = Dogrulama.Isim(sporcu.SporcuSoyad, "Soyad");
+            sporcu.Eposta = Dogrulama.Eposta(sporcu.Eposta);
+            Dogrulama.DogumTarihi(sporcu.SporcuDogumTarihi, 5, 80);
+
+            bool epostaKullaniliyor = db.Sporcular.Any(s => s.Eposta == sporcu.Eposta && s.SporcuId != sporcu.SporcuId);
+            if (epostaKullaniliyor)
+                throw new KuralHatasi("Bu e-posta adresiyle kayıtlı başka bir sporcu var.");
         }
     }
 }
-
-

@@ -3,12 +3,12 @@
     partial class BransAntrenorIslem
     {
         /// <summary>
-        /// Required designer variable.
+        ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        ///  Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -23,200 +23,183 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            dataGridView1 = new DataGridView();
-            dataGridView2 = new DataGridView();
-            dataGridView3 = new DataGridView();
+            lblBaslik = new Label();
             label1 = new Label();
-            textBox_BRANS_ID = new TextBox();
+            cmbAntrenor = new ComboBox();
             label2 = new Label();
-            textBox_ANTRENOR_ID = new TextBox();
-            label3 = new Label();
-            textBox_BA_ID = new TextBox();
-            button_listeleBA = new Button();
-            button_guncelleBA = new Button();
-            button_silBA = new Button();
-            button_ekleBA = new Button();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
+            cmbBrans = new ComboBox();
+            lblBilgi = new Label();
+            btnEkle = new Button();
+            btnSil = new Button();
+            btnTemizle = new Button();
+            lblKayitSayisi = new Label();
+            dgvAtamalar = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dgvAtamalar).BeginInit();
             SuspendLayout();
             // 
-            // dataGridView1
+            // lblBaslik
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(31, 12);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(368, 178);
-            dataGridView1.TabIndex = 0;
-            // 
-            // dataGridView2
-            // 
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Location = new Point(36, 222);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(368, 178);
-            dataGridView2.TabIndex = 1;
-            // 
-            // dataGridView3
-            // 
-            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView3.Location = new Point(36, 447);
-            dataGridView3.Name = "dataGridView3";
-            dataGridView3.RowHeadersWidth = 51;
-            dataGridView3.Size = new Size(368, 178);
-            dataGridView3.TabIndex = 2;
+            lblBaslik.AutoSize = true;
+            lblBaslik.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblBaslik.ForeColor = Color.DarkOliveGreen;
+            lblBaslik.Text = "Branş – Antrenör Atamaları";
+            lblBaslik.Location = new Point(20, 15);
+            lblBaslik.Name = "lblBaslik";
+            lblBaslik.TabIndex = 0;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label1.Location = new Point(441, 106);
+            label1.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            label1.Text = "Antrenör:";
+            label1.Location = new Point(20, 63);
             label1.Name = "label1";
-            label1.Size = new Size(111, 28);
-            label1.TabIndex = 26;
-            label1.Text = "BRANŞ ID:";
+            label1.TabIndex = 1;
             // 
-            // textBox_BRANS_ID
+            // cmbAntrenor
             // 
-            textBox_BRANS_ID.Font = new Font("Segoe UI", 12F);
-            textBox_BRANS_ID.Location = new Point(728, 106);
-            textBox_BRANS_ID.Name = "textBox_BRANS_ID";
-            textBox_BRANS_ID.Size = new Size(112, 34);
-            textBox_BRANS_ID.TabIndex = 25;
+            cmbAntrenor.Font = new Font("Segoe UI", 10F);
+            cmbAntrenor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbAntrenor.FormattingEnabled = true;
+            cmbAntrenor.Location = new Point(150, 60);
+            cmbAntrenor.Name = "cmbAntrenor";
+            cmbAntrenor.Size = new Size(240, 25);
+            cmbAntrenor.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label2.Location = new Point(441, 302);
+            label2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            label2.Text = "Branş:";
+            label2.Location = new Point(20, 105);
             label2.Name = "label2";
-            label2.Size = new Size(154, 28);
-            label2.TabIndex = 28;
-            label2.Text = "ANTRENÖR ID:";
+            label2.TabIndex = 3;
             // 
-            // textBox_ANTRENOR_ID
+            // cmbBrans
             // 
-            textBox_ANTRENOR_ID.Font = new Font("Segoe UI", 12F);
-            textBox_ANTRENOR_ID.Location = new Point(728, 302);
-            textBox_ANTRENOR_ID.Name = "textBox_ANTRENOR_ID";
-            textBox_ANTRENOR_ID.Size = new Size(112, 34);
-            textBox_ANTRENOR_ID.TabIndex = 27;
+            cmbBrans.Font = new Font("Segoe UI", 10F);
+            cmbBrans.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbBrans.FormattingEnabled = true;
+            cmbBrans.Location = new Point(150, 102);
+            cmbBrans.Name = "cmbBrans";
+            cmbBrans.Size = new Size(240, 25);
+            cmbBrans.TabIndex = 4;
             // 
-            // label3
+            // lblBilgi
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label3.Location = new Point(441, 525);
-            label3.Name = "label3";
-            label3.Size = new Size(229, 28);
-            label3.TabIndex = 30;
-            label3.Text = "BRANŞ-ANTRENÖR ID:";
+            lblBilgi.ForeColor = SystemColors.GrayText;
+            lblBilgi.Text = "Bir antrenör birden fazla branşta görev alabilir. Aynı atama iki kez yapılamaz.";
+            lblBilgi.Location = new Point(20, 146);
+            lblBilgi.Name = "lblBilgi";
+            lblBilgi.Size = new Size(370, 40);
+            lblBilgi.TabIndex = 5;
             // 
-            // textBox_BA_ID
+            // btnEkle
             // 
-            textBox_BA_ID.Font = new Font("Segoe UI", 12F);
-            textBox_BA_ID.Location = new Point(728, 525);
-            textBox_BA_ID.Name = "textBox_BA_ID";
-            textBox_BA_ID.Size = new Size(112, 34);
-            textBox_BA_ID.TabIndex = 29;
+            btnEkle.BackColor = Color.DarkKhaki;
+            btnEkle.FlatStyle = FlatStyle.Flat;
+            btnEkle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnEkle.ForeColor = Color.White;
+            btnEkle.Text = "BRANŞA ATA";
+            btnEkle.UseVisualStyleBackColor = false;
+            btnEkle.Location = new Point(20, 194);
+            btnEkle.Name = "btnEkle";
+            btnEkle.Size = new Size(180, 40);
+            btnEkle.TabIndex = 6;
+            btnEkle.Click += btnEkle_Click;
             // 
-            // button_listeleBA
+            // btnSil
             // 
-            button_listeleBA.BackColor = Color.DarkKhaki;
-            button_listeleBA.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_listeleBA.ForeColor = SystemColors.Control;
-            button_listeleBA.Location = new Point(970, 370);
-            button_listeleBA.Name = "button_listeleBA";
-            button_listeleBA.Size = new Size(127, 53);
-            button_listeleBA.TabIndex = 34;
-            button_listeleBA.Text = "LİSTELE";
-            button_listeleBA.UseVisualStyleBackColor = false;
+            btnSil.BackColor = Color.DarkKhaki;
+            btnSil.FlatStyle = FlatStyle.Flat;
+            btnSil.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnSil.ForeColor = Color.White;
+            btnSil.Text = "ATAMAYI SİL";
+            btnSil.UseVisualStyleBackColor = false;
+            btnSil.Location = new Point(210, 194);
+            btnSil.Name = "btnSil";
+            btnSil.Size = new Size(180, 40);
+            btnSil.TabIndex = 7;
+            btnSil.Click += btnSil_Click;
             // 
-            // button_guncelleBA
+            // btnTemizle
             // 
-            button_guncelleBA.BackColor = Color.DarkKhaki;
-            button_guncelleBA.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_guncelleBA.ForeColor = SystemColors.Control;
-            button_guncelleBA.Location = new Point(970, 487);
-            button_guncelleBA.Name = "button_guncelleBA";
-            button_guncelleBA.Size = new Size(127, 53);
-            button_guncelleBA.TabIndex = 33;
-            button_guncelleBA.Text = "GÜNCELLE";
-            button_guncelleBA.UseVisualStyleBackColor = false;
+            btnTemizle.BackColor = Color.DarkKhaki;
+            btnTemizle.FlatStyle = FlatStyle.Flat;
+            btnTemizle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnTemizle.ForeColor = Color.White;
+            btnTemizle.Text = "TEMİZLE";
+            btnTemizle.UseVisualStyleBackColor = false;
+            btnTemizle.Location = new Point(20, 242);
+            btnTemizle.Name = "btnTemizle";
+            btnTemizle.Size = new Size(180, 40);
+            btnTemizle.TabIndex = 8;
+            btnTemizle.Click += btnTemizle_Click;
             // 
-            // button_silBA
+            // lblKayitSayisi
             // 
-            button_silBA.BackColor = Color.DarkKhaki;
-            button_silBA.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_silBA.ForeColor = SystemColors.Control;
-            button_silBA.Location = new Point(970, 250);
-            button_silBA.Name = "button_silBA";
-            button_silBA.Size = new Size(127, 53);
-            button_silBA.TabIndex = 32;
-            button_silBA.Text = "SİL";
-            button_silBA.UseVisualStyleBackColor = false;
+            lblKayitSayisi.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblKayitSayisi.AutoSize = true;
+            lblKayitSayisi.ForeColor = SystemColors.GrayText;
+            lblKayitSayisi.Text = "";
+            lblKayitSayisi.Location = new Point(420, 538);
+            lblKayitSayisi.Name = "lblKayitSayisi";
+            lblKayitSayisi.TabIndex = 9;
             // 
-            // button_ekleBA
+            // dgvAtamalar
             // 
-            button_ekleBA.BackColor = Color.DarkKhaki;
-            button_ekleBA.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_ekleBA.ForeColor = SystemColors.Control;
-            button_ekleBA.Location = new Point(970, 137);
-            button_ekleBA.Name = "button_ekleBA";
-            button_ekleBA.Size = new Size(127, 53);
-            button_ekleBA.TabIndex = 31;
-            button_ekleBA.Text = "EKLE";
-            button_ekleBA.UseVisualStyleBackColor = false;
-           
+            dgvAtamalar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvAtamalar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvAtamalar.Location = new Point(420, 60);
+            dgvAtamalar.Name = "dgvAtamalar";
+            dgvAtamalar.Size = new Size(640, 472);
+            dgvAtamalar.TabIndex = 10;
+            dgvAtamalar.CellClick += dgvAtamalar_CellClick;
             // 
             // BransAntrenorIslem
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1121, 665);
-            Controls.Add(button_listeleBA);
-            Controls.Add(button_guncelleBA);
-            Controls.Add(button_silBA);
-            Controls.Add(button_ekleBA);
-            Controls.Add(label3);
-            Controls.Add(textBox_BA_ID);
+            BackColor = Color.WhiteSmoke;
+            ClientSize = new Size(1080, 560);
+            Controls.Add(dgvAtamalar);
+            Controls.Add(lblKayitSayisi);
+            Controls.Add(btnTemizle);
+            Controls.Add(btnSil);
+            Controls.Add(btnEkle);
+            Controls.Add(lblBilgi);
+            Controls.Add(cmbBrans);
             Controls.Add(label2);
-            Controls.Add(textBox_ANTRENOR_ID);
+            Controls.Add(cmbAntrenor);
             Controls.Add(label1);
-            Controls.Add(textBox_BRANS_ID);
-            Controls.Add(dataGridView3);
-            Controls.Add(dataGridView2);
-            Controls.Add(dataGridView1);
+            Controls.Add(lblBaslik);
+            MinimumSize = new Size(900, 480);
             Name = "BransAntrenorIslem";
-            Text = "BransAntrenorIslem";
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Branş – Antrenör Atamaları";
+            Load += BransAntrenorIslem_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvAtamalar).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private DataGridView dataGridView1;
-        private DataGridView dataGridView2;
-        private DataGridView dataGridView3;
+        private Label lblBaslik;
         private Label label1;
-        private TextBox textBox_BRANS_ID;
+        private ComboBox cmbAntrenor;
         private Label label2;
-        private TextBox textBox_ANTRENOR_ID;
-        private Label label3;
-        private TextBox textBox_BA_ID;
-        private Button button_listeleBA;
-        private Button button_guncelleBA;
-        private Button button_silBA;
-        private Button button_ekleBA;
+        private ComboBox cmbBrans;
+        private Label lblBilgi;
+        private Button btnEkle;
+        private Button btnSil;
+        private Button btnTemizle;
+        private Label lblKayitSayisi;
+        private DataGridView dgvAtamalar;
     }
 }

@@ -1,18 +1,13 @@
-﻿using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SporKulubuYS_Service.Model;
 
 namespace SporKulubuYS_Service.Core
 {
+    /// <summary>Antrenörlerin hangi branşlarda görev yaptığını yönetir (çoka-çok ilişki).</summary>
     public interface IBransAntrenorService
     {
         void Ekle(BransAntrenor bransAntrenor);
-        void Sil(int BransAntrenorId);
-        void Güncelle(BransAntrenor bransAntrenor);
-        BransAntrenor Getir(int BransAntrenorId);
+        void Sil(int bransAntrenorId);
         List<BransAntrenor> Listele();
     }
 
@@ -27,40 +22,43 @@ namespace SporKulubuYS_Service.Core
 
         public void Ekle(BransAntrenor bransAntrenor)
         {
+            Dogrulama.Secili(bransAntrenor.AntrenorId, "bir antrenör");
+            Dogrulama.Secili(bransAntrenor.BransId, "bir branş");
+
+            if (!db.Antrenorler.Any(a => a.AntrenorId == bransAntrenor.AntrenorId))
+                throw new KuralHatasi("Seçilen antrenör bulunamadı.");
+
+            if (!db.Branslar.Any(b => b.BransId == bransAntrenor.BransId))
+                throw new KuralHatasi("Seçilen branş bulunamadı.");
+
+            bool zatenAtanmis = db.BransAntrenorler.Any(ba =>
+                ba.AntrenorId == bransAntrenor.AntrenorId && ba.BransId == bransAntrenor.BransId);
+            if (zatenAtanmis)
+                throw new KuralHatasi("Bu antrenör bu branşa zaten atanmış.");
+
             db.BransAntrenorler.Add(bransAntrenor);
             db.SaveChanges();
         }
 
-        public void Sil(int BransAntrenorId)
+        public void Sil(int bransAntrenorId)
         {
-            var bransAntrenor = db.BransAntrenorler.Find(BransAntrenorId);
-            if (bransAntrenor != null)
-            {
-                db.BransAntrenorler.Remove(bransAntrenor);
-                db.SaveChanges();
-            }
-        }
+            Dogrulama.Secili(bransAntrenorId, "listeden bir kayıt");
 
-        public void Güncelle(BransAntrenor bransAntrenor)
-        {
-            var eskiKayit = db.BransAntrenorler.Find(bransAntrenor.BransAntrenorId);
+            var kayit = db.BransAntrenorler.Find(bransAntrenorId)
+                        ?? throw new KuralHatasi("Kayıt bulunamadı.");
 
-            eskiKayit.AntrenorId = bransAntrenor.AntrenorId;
-            eskiKayit.BransId = bransAntrenor.BransId;
-
-            db.BransAntrenorler.Update(eskiKayit);
+            db.BransAntrenorler.Remove(kayit);
             db.SaveChanges();
-        }
-
-        public BransAntrenor Getir(int BransAntrenorId)
-        {
-            var bransAntrenor = db.BransAntrenorler.Find(BransAntrenorId);
-            return bransAntrenor;
         }
 
         public List<BransAntrenor> Listele()
         {
-            return db.BransAntrenorler.ToList();
+            return db.BransAntrenorler
+                .Include(ba => ba.Antrenor)
+                .Include(ba => ba.Brans)
+                .OrderBy(ba => ba.Brans.BransAd)
+                .ThenBy(ba => ba.Antrenor.AntrenorAd)
+                .ToList();
         }
     }
 }

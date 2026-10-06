@@ -1,100 +1,138 @@
-﻿using SporKulubuYS_Service.Core;
+using SporKulubuYS_Service.Core;
 using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SporKulubuYS_UI
 {
     public partial class SalonIslem : Form
     {
-        SporKulubuDB db;
-        SalonService salonService;
+        private SporKulubuDB db = null!;
+        private ISalonService salonService = null!;
+        private IBransService bransService = null!;
+        private int seciliSalonId;
 
         public SalonIslem()
         {
             InitializeComponent();
+            FormClosed += (_, _) => db?.Dispose();
         }
 
         private void SalonIslem_Load(object sender, EventArgs e)
         {
             db = new SporKulubuDB();
             salonService = new SalonService(db);
-            Yenile();
+            bransService = new BransService(db);
+
+            nudKapasite.Maximum = SalonService.MaxKapasite;
+            UiYardimci.TabloAyarla(dgvSalonlar);
+
+            UiYardimci.Calistir(() =>
+                UiYardimci.ComboDoldur(cmbBrans,
+                    bransService.Listele().Select(b => new SecimOgesi(b.BransId, b.BransAd))));
+
+            Temizle();
+            Listele();
         }
 
-        public void Yenile()
+        private void Listele()
         {
-            var salonlar = salonService.Listele();
-            dataGridView1.DataSource = salonlar;
+            UiYardimci.Calistir(() =>
+            {
+                var liste = salonService.Listele()
+                    .Select(s => new
+                    {
+                        Id = s.SalonId,
+                        Salon = s.SalonAd,
+                        Brans = s.Brans.BransAd,
+                        Kapasite = s.Kapasite,
+                        Yer = s.SalonYer
+                    });
+
+                UiYardimci.Bagla(dgvSalonlar, liste);
+                dgvSalonlar.Columns["Brans"]!.HeaderText = "Branş";
+                lblKayitSayisi.Text = $"Kayıt sayısı: {dgvSalonlar.Rows.Count}";
+            });
+        }
+
+        private Salon FormdanOku()
+        {
+            return new Salon
+            {
+                SalonId = seciliSalonId,
+                SalonAd = txtSalonAd.Text,
+                BransId = UiYardimci.ComboId(cmbBrans),
+                Kapasite = (int)nudKapasite.Value,
+                SalonYer = txtYer.Text
+            };
+        }
+
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                Salon salon = FormdanOku();
+                salon.SalonId = 0;
+                salonService.Ekle(salon);
+            }, "Salon eklendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                if (seciliSalonId == 0)
+                    throw new KuralHatasi("Lütfen listeden bir salon seçiniz.");
+                salonService.Guncelle(FormdanOku());
+            }, "Salon güncellendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (seciliSalonId == 0)
+            {
+                UiYardimci.Uyari("Lütfen listeden bir salon seçiniz.");
+                return;
+            }
+
+            if (!UiYardimci.Onayla($"'{txtSalonAd.Text}' salonu silinsin mi?"))
+                return;
+
+            bool basarili = UiYardimci.Calistir(() => salonService.Sil(seciliSalonId), "Salon silindi.");
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
             Temizle();
         }
 
-        public void Temizle()
+        private void dgvSalonlar_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            textBox_salonID.Text = "";
-            textBox_salonAD.Text = "";
-            textBox1.Text = "";
-            textBox_salonKAPASITE.Text = "";
-            textBox_salonYER.Text = "";
+            int id = UiYardimci.SeciliId(dgvSalonlar, e.RowIndex);
+            if (id == 0) return;
+
+            Salon? salon = salonService.Getir(id);
+            if (salon == null) return;
+
+            seciliSalonId = salon.SalonId;
+            txtSalonAd.Text = salon.SalonAd;
+            cmbBrans.SelectedValue = salon.BransId;
+            nudKapasite.Value = Math.Clamp(salon.Kapasite, (int)nudKapasite.Minimum, (int)nudKapasite.Maximum);
+            txtYer.Text = salon.SalonYer;
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void Temizle()
         {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                textBox_salonID.Text = row.Cells[0].Value.ToString();
-                textBox1.Text = row.Cells[1].Value.ToString();
-                textBox_salonAD.Text = row.Cells[2].Value.ToString();
-                textBox_salonYER.Text = row.Cells[3].Value.ToString();
-                textBox_salonKAPASITE.Text = row.Cells[4].Value.ToString();
-            }
-        }
-
-        private void button_ekleSalon_Click(object sender, EventArgs e)
-        {
-            Salon salon = new Salon();
-            salon.SalonAd = textBox_salonAD.Text;
-            salon.BransId = Convert.ToInt32(textBox1.Text);
-            salon.Kapasite = Convert.ToInt32(textBox_salonKAPASITE.Text);
-            salon.SalonYer = textBox_salonYER.Text;
-
-            salonService.Ekle(salon);
-            Yenile();
-        }
-
-        private void button_silSalon_Click(object sender, EventArgs e)
-        {
-            int SalonId = Convert.ToInt32(textBox_salonID.Text);
-            salonService.Sil(SalonId);
-            Yenile();
-        }
-
-        private void button_guncelleSalon_Click(object sender, EventArgs e)
-        {
-            Salon salon = new Salon();
-            salon.SalonId = Convert.ToInt32(textBox_salonID.Text);
-            salon.BransId = Convert.ToInt32(textBox1.Text);
-            salon.SalonAd = textBox_salonAD.Text;
-            salon.Kapasite = Convert.ToInt32(textBox_salonKAPASITE.Text);
-            salon.SalonYer = textBox_salonYER.Text;
-
-            salonService.Güncelle(salon);
-            Yenile();
-        }
-
-        private void button_listeleSalon_Click(object sender, EventArgs e)
-        {
-            Yenile();
+            seciliSalonId = 0;
+            txtSalonAd.Clear();
+            txtYer.Clear();
+            cmbBrans.SelectedIndex = -1;
+            nudKapasite.Value = 50;
+            dgvSalonlar.ClearSelection();
+            txtSalonAd.Focus();
         }
     }
-
 }

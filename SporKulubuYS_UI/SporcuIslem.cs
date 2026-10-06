@@ -1,129 +1,158 @@
-﻿using SporKulubuYS_Service.Core;
+using SporKulubuYS_Service.Core;
 using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace SporKulubuYS_UI
 {
     public partial class SporcuIslem : Form
     {
-        SporKulubuDB db;
-        SporcuService sporcuService;
+        private SporKulubuDB db = null!;
+        private ISporcuService sporcuService = null!;
+        private int seciliSporcuId;
+
         public SporcuIslem()
         {
             InitializeComponent();
+            FormClosed += (_, _) => db?.Dispose();
         }
 
         private void SporcuIslem_Load(object sender, EventArgs e)
         {
             db = new SporKulubuDB();
             sporcuService = new SporcuService(db);
-            Yenile();
+
+            cmbCinsiyet.Items.AddRange(new object[] { "Erkek", "Kadın" });
+            dtpDogumTarihi.MaxDate = DateTime.Today;
+            UiYardimci.TabloAyarla(dgvSporcular);
+
+            Temizle();
+            Listele();
         }
 
-        public void Yenile()
+        private void Listele()
         {
-            var sporcular = sporcuService.Listele();
-            dataGridView1.DataSource = sporcular;
+            UiYardimci.Calistir(() =>
+            {
+                var liste = sporcuService.Listele(txtAra.Text)
+                    .Select(s => new
+                    {
+                        Id = s.SporcuId,
+                        Ad = s.SporcuAd,
+                        Soyad = s.SporcuSoyad,
+                        DogumTarihi = s.SporcuDogumTarihi.ToString("dd.MM.yyyy"),
+                        Yas = Yas(s.SporcuDogumTarihi),
+                        Cinsiyet = s.Cinsiyet ? "Erkek" : "Kadın",
+                        Eposta = s.Eposta,
+                        Branslar = string.Join(", ", s.SporcuBranslar.Select(sb => sb.Brans.BransAd))
+                    });
+
+                UiYardimci.Bagla(dgvSporcular, liste);
+                dgvSporcular.Columns["DogumTarihi"]!.HeaderText = "Doğum Tarihi";
+                dgvSporcular.Columns["Yas"]!.HeaderText = "Yaş";
+                dgvSporcular.Columns["Eposta"]!.HeaderText = "E-posta";
+                dgvSporcular.Columns["Branslar"]!.HeaderText = "Branşlar";
+                lblKayitSayisi.Text = $"Kayıt sayısı: {dgvSporcular.Rows.Count}";
+            });
+        }
+
+        private Sporcu FormdanOku()
+        {
+            if (cmbCinsiyet.SelectedIndex < 0)
+                throw new KuralHatasi("Lütfen cinsiyet seçiniz.");
+
+            return new Sporcu
+            {
+                SporcuId = seciliSporcuId,
+                SporcuAd = txtAd.Text,
+                SporcuSoyad = txtSoyad.Text,
+                SporcuDogumTarihi = dtpDogumTarihi.Value.Date,
+                Cinsiyet = cmbCinsiyet.SelectedIndex == 0, // 0 = Erkek
+                Eposta = txtEposta.Text
+            };
+        }
+
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                Sporcu sporcu = FormdanOku();
+                sporcu.SporcuId = 0;
+                sporcuService.Ekle(sporcu);
+            }, "Sporcu eklendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                if (seciliSporcuId == 0)
+                    throw new KuralHatasi("Lütfen listeden bir sporcu seçiniz.");
+                sporcuService.Guncelle(FormdanOku());
+            }, "Sporcu güncellendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (seciliSporcuId == 0)
+            {
+                UiYardimci.Uyari("Lütfen listeden bir sporcu seçiniz.");
+                return;
+            }
+
+            if (!UiYardimci.Onayla($"{txtAd.Text} {txtSoyad.Text} silinsin mi?\n\nSporcunun branş kayıtları da silinecek."))
+                return;
+
+            bool basarili = UiYardimci.Calistir(() => sporcuService.Sil(seciliSporcuId), "Sporcu silindi.");
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
             Temizle();
         }
 
-        public void Temizle()
+        private void txtAra_TextChanged(object sender, EventArgs e)
         {
-            textBox_sporcuID.Text = "";
-            textBox_sporcuAD.Text = "";
-            textBox_sporcuSOYAD.Text = "";
-            comboBox1.SelectedIndex = -1;
-            dateTimePickerSporcu.Value = DateTime.Now;
-            textBox_sporcuEPOSTA.Text = "";
+            Listele();
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvSporcular_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0) // Ensure the clicked cell is a valid row
-            {
-                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                textBox_sporcuID.Text = row.Cells[0].Value.ToString();
-                textBox_sporcuAD.Text = row.Cells[1].Value.ToString();
-                textBox_sporcuSOYAD.Text = row.Cells[2].Value.ToString();
-                dateTimePickerSporcu.Value = Convert.ToDateTime(row.Cells[3].Value);
-                if (Convert.ToBoolean(row.Cells[4].Value) == true)
-                {
-                    comboBox1.SelectedIndex = 0;
-                }
-                else
-                {
-                    comboBox1.SelectedIndex = 1;
-                }
+            int id = UiYardimci.SeciliId(dgvSporcular, e.RowIndex);
+            if (id == 0) return;
 
-                textBox_sporcuEPOSTA.Text = row.Cells[5].Value.ToString();
-            }
+            Sporcu? sporcu = sporcuService.Getir(id);
+            if (sporcu == null) return;
+
+            seciliSporcuId = sporcu.SporcuId;
+            txtAd.Text = sporcu.SporcuAd;
+            txtSoyad.Text = sporcu.SporcuSoyad;
+            dtpDogumTarihi.Value = sporcu.SporcuDogumTarihi;
+            cmbCinsiyet.SelectedIndex = sporcu.Cinsiyet ? 0 : 1;
+            txtEposta.Text = sporcu.Eposta;
         }
 
-
-
-        private void button_ekleSporcu_Click(object sender, EventArgs e)
+        private void Temizle()
         {
-
-            Sporcu sporcu = new Sporcu();
-            sporcu.SporcuAd = textBox_sporcuAD.Text; ;
-            sporcu.SporcuSoyad = textBox_sporcuSOYAD.Text;
-            if (comboBox1.SelectedIndex == 0)
-            {
-                sporcu.Cinsiyet = true;
-            }
-            else
-            {
-                sporcu.Cinsiyet = false;
-            }
-            sporcu.SporcuDogumTarihi = dateTimePickerSporcu.Value;
-            sporcu.Eposta = textBox_sporcuEPOSTA.Text;
-
-            sporcuService.Ekle(sporcu);
-            Yenile();
-
+            seciliSporcuId = 0;
+            txtAd.Clear();
+            txtSoyad.Clear();
+            txtEposta.Clear();
+            cmbCinsiyet.SelectedIndex = -1;
+            dtpDogumTarihi.Value = DateTime.Today.AddYears(-18);
+            dgvSporcular.ClearSelection();
+            txtAd.Focus();
         }
 
-        private void button_silSporcu_Click(object sender, EventArgs e)
+        private static int Yas(DateTime dogumTarihi)
         {
-            int SporcuId = Convert.ToInt32(textBox_sporcuID.Text);
-            sporcuService.Sil(SporcuId);
-            Yenile();
-        }
-
-        private void button_guncelleSporcu_Click(object sender, EventArgs e)
-        {
-            Sporcu sporcu = new Sporcu();
-            int SporcuId = Convert.ToInt32(textBox_sporcuID.Text);
-            sporcu.SporcuId = SporcuId;
-            sporcu.SporcuAd = textBox_sporcuAD.Text; ;
-            sporcu.SporcuSoyad = textBox_sporcuSOYAD.Text;
-            if (comboBox1.SelectedIndex == 0)
-            {
-                sporcu.Cinsiyet = true;
-            }
-            else
-            {
-                sporcu.Cinsiyet = false;
-            }
-            sporcu.SporcuDogumTarihi = dateTimePickerSporcu.Value;
-            sporcu.Eposta = textBox_sporcuEPOSTA.Text;
-
-           sporcuService.Güncelle(sporcu);
-            Yenile();
-
-        }
-
-        private void button_listeleSporcu_Click(object sender, EventArgs e)
-        {
-            Yenile();
+            DateTime bugun = DateTime.Today;
+            int yas = bugun.Year - dogumTarihi.Year;
+            if (dogumTarihi.Date > bugun.AddYears(-yas)) yas--;
+            return yas;
         }
     }
 }

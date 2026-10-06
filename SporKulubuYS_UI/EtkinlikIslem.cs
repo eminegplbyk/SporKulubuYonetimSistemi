@@ -1,102 +1,150 @@
-﻿using SporKulubuYS_Service.Core;
+using SporKulubuYS_Service.Core;
 using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SporKulubuYS_UI
 {
     public partial class EtkinlikIslem : Form
     {
-        SporKulubuDB db;
-        EtkinlikService etkinlikService;
+        private SporKulubuDB db = null!;
+        private IEtkinlikService etkinlikService = null!;
+        private IBransService bransService = null!;
+        private int seciliEtkinlikId;
+
         public EtkinlikIslem()
         {
             InitializeComponent();
+            FormClosed += (_, _) => db?.Dispose();
         }
 
         private void EtkinlikIslem_Load(object sender, EventArgs e)
         {
             db = new SporKulubuDB();
             etkinlikService = new EtkinlikService(db);
+            bransService = new BransService(db);
+
+            UiYardimci.TabloAyarla(dgvEtkinlikler);
+
+            UiYardimci.Calistir(() =>
+                UiYardimci.ComboDoldur(cmbBrans,
+                    bransService.Listele().Select(b => new SecimOgesi(b.BransId, b.BransAd))));
+
+            Temizle();
+            Listele();
         }
 
-        public void Yenile()
+        private void Listele()
         {
-            var etkinlikler = etkinlikService.Listele();
-            dataGridView1.DataSource = etkinlikler;
+            UiYardimci.Calistir(() =>
+            {
+                DateTime simdi = DateTime.Now;
+                var liste = etkinlikService.Listele(chkYaklasan.Checked)
+                    .Select(et => new
+                    {
+                        Id = et.EtkinlikId,
+                        Etkinlik = et.EtkinlikAd,
+                        Brans = et.Brans.BransAd,
+                        Tarih = et.EtkinlikTarih.ToString("dd.MM.yyyy HH:mm"),
+                        Yer = et.EtkinlikYer,
+                        Aciklama = et.EtkinlikAciklama,
+                        Durum = et.EtkinlikTarih >= simdi ? "Yaklaşan" : "Geçmiş"
+                    });
+
+                UiYardimci.Bagla(dgvEtkinlikler, liste);
+                dgvEtkinlikler.Columns["Brans"]!.HeaderText = "Branş";
+                dgvEtkinlikler.Columns["Aciklama"]!.HeaderText = "Açıklama";
+                lblKayitSayisi.Text = $"Kayıt sayısı: {dgvEtkinlikler.Rows.Count}";
+            });
+        }
+
+        private Etkinlik FormdanOku()
+        {
+            return new Etkinlik
+            {
+                EtkinlikId = seciliEtkinlikId,
+                EtkinlikAd = txtEtkinlikAd.Text,
+                BransId = UiYardimci.ComboId(cmbBrans),
+                EtkinlikYer = txtYer.Text,
+                EtkinlikTarih = dtpTarih.Value,
+                EtkinlikAciklama = txtAciklama.Text
+            };
+        }
+
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                Etkinlik etkinlik = FormdanOku();
+                etkinlik.EtkinlikId = 0;
+                etkinlikService.Ekle(etkinlik);
+            }, "Etkinlik eklendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                if (seciliEtkinlikId == 0)
+                    throw new KuralHatasi("Lütfen listeden bir etkinlik seçiniz.");
+                etkinlikService.Guncelle(FormdanOku());
+            }, "Etkinlik güncellendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (seciliEtkinlikId == 0)
+            {
+                UiYardimci.Uyari("Lütfen listeden bir etkinlik seçiniz.");
+                return;
+            }
+
+            if (!UiYardimci.Onayla($"'{txtEtkinlikAd.Text}' etkinliği silinsin mi?"))
+                return;
+
+            bool basarili = UiYardimci.Calistir(() => etkinlikService.Sil(seciliEtkinlikId), "Etkinlik silindi.");
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
             Temizle();
         }
 
-        public void Temizle()
+        private void chkYaklasan_CheckedChanged(object sender, EventArgs e)
         {
-            textBox_etkinlikID.Text = "";
-            textBox_etkinlikAD.Text = "";
-            textBox_etkinlikYER.Text = "";
-            textBox1.Text = "";
-            dateTimePickerEtkinlik.Value = DateTime.Now;
-            textBox_etkinlikACIKLAMA.Text = "";
+            Listele();
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvEtkinlikler_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0) // Ensure the clicked cell is a valid row
-            {
-                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                textBox_etkinlikID.Text = row.Cells[0].Value.ToString();
-                textBox1.Text = row.Cells[1].Value.ToString();
-                textBox_etkinlikAD.Text = row.Cells[2].Value.ToString();
-                textBox_etkinlikYER.Text = row.Cells[3].Value.ToString();
-                dateTimePickerEtkinlik.Value = Convert.ToDateTime(row.Cells[4].Value);
-                textBox_etkinlikACIKLAMA.Text = row.Cells[5].Value.ToString();
-            }
+            int id = UiYardimci.SeciliId(dgvEtkinlikler, e.RowIndex);
+            if (id == 0) return;
+
+            Etkinlik? etkinlik = etkinlikService.Getir(id);
+            if (etkinlik == null) return;
+
+            seciliEtkinlikId = etkinlik.EtkinlikId;
+            txtEtkinlikAd.Text = etkinlik.EtkinlikAd;
+            cmbBrans.SelectedValue = etkinlik.BransId;
+            txtYer.Text = etkinlik.EtkinlikYer;
+            dtpTarih.Value = etkinlik.EtkinlikTarih;
+            txtAciklama.Text = etkinlik.EtkinlikAciklama;
         }
 
-        private void button_ekleEtkinlik_Click(object sender, EventArgs e)
+        private void Temizle()
         {
-            Etkinlik etkinlik = new Etkinlik();
-            etkinlik.EtkinlikAd = textBox_etkinlikAD.Text;
-            etkinlik.BransId = Convert.ToInt32(textBox1.Text);
-            etkinlik.EtkinlikYer = textBox_etkinlikYER.Text;
-            etkinlik.EtkinlikTarih = dateTimePickerEtkinlik.Value;
-            etkinlik.EtkinlikAciklama = textBox_etkinlikACIKLAMA.Text;
-
-            etkinlikService.Ekle(etkinlik);
-            Yenile();
-        }
-
-        private void button_silEtkinlik_Click(object sender, EventArgs e)
-        {
-            int EtkinlikId = Convert.ToInt32(textBox_etkinlikID.Text);
-            etkinlikService.Sil(EtkinlikId);
-            Yenile();
-        }
-
-        private void button_guncelleEtkinlik_Click(object sender, EventArgs e)
-        {
-
-            Etkinlik etkinlik = new Etkinlik();
-            etkinlik.EtkinlikId = Convert.ToInt32(textBox_etkinlikID.Text);
-            etkinlik.EtkinlikAd = textBox_etkinlikAD.Text;
-            etkinlik.BransId = Convert.ToInt32(textBox1.Text);
-            etkinlik.EtkinlikYer = textBox_etkinlikYER.Text;
-            etkinlik.EtkinlikTarih = dateTimePickerEtkinlik.Value;
-            etkinlik.EtkinlikAciklama = textBox_etkinlikACIKLAMA.Text;
-
-            etkinlikService.Güncelle(etkinlik);
-            Yenile();
-        }
-
-        private void button_listeleEtkinlik_Click(object sender, EventArgs e)
-        {
-            Yenile();
+            seciliEtkinlikId = 0;
+            txtEtkinlikAd.Clear();
+            txtYer.Clear();
+            txtAciklama.Clear();
+            cmbBrans.SelectedIndex = -1;
+            // Varsayılan: yarın saat 10:00
+            dtpTarih.Value = DateTime.Today.AddDays(1).AddHours(10);
+            dgvEtkinlikler.ClearSelection();
+            txtEtkinlikAd.Focus();
         }
     }
 }

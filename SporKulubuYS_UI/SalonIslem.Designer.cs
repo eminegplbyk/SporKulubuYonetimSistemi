@@ -3,12 +3,12 @@
     partial class SalonIslem
     {
         /// <summary>
-        /// Required designer variable.
+        ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        ///  Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -23,226 +23,239 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
+            lblBaslik = new Label();
             label1 = new Label();
-            textBox_salonYER = new TextBox();
-            textBox_salonAD = new TextBox();
-            textBox_salonID = new TextBox();
-            label3 = new Label();
+            txtSalonAd = new TextBox();
             label2 = new Label();
+            cmbBrans = new ComboBox();
+            label3 = new Label();
+            nudKapasite = new NumericUpDown();
             label4 = new Label();
-            textBox_salonKAPASITE = new TextBox();
-            dataGridView1 = new DataGridView();
-            button_listeleSalon = new Button();
-            button_guncelleSalon = new Button();
-            button_silSalon = new Button();
-            button_ekleSalon = new Button();
-            label5 = new Label();
-            textBox1 = new TextBox();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            txtYer = new TextBox();
+            btnEkle = new Button();
+            btnGuncelle = new Button();
+            btnSil = new Button();
+            btnTemizle = new Button();
+            lblKayitSayisi = new Label();
+            dgvSalonlar = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)nudKapasite).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvSalonlar).BeginInit();
             SuspendLayout();
+            // 
+            // lblBaslik
+            // 
+            lblBaslik.AutoSize = true;
+            lblBaslik.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblBaslik.ForeColor = Color.DarkOliveGreen;
+            lblBaslik.Text = "Salon İşlemleri";
+            lblBaslik.Location = new Point(20, 15);
+            lblBaslik.Name = "lblBaslik";
+            lblBaslik.TabIndex = 0;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label1.Location = new Point(51, 54);
+            label1.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            label1.Text = "Salon Adı:";
+            label1.Location = new Point(20, 63);
             label1.Name = "label1";
-            label1.Size = new Size(38, 28);
-            label1.TabIndex = 30;
-            label1.Text = "ID:";
+            label1.TabIndex = 1;
             // 
-            // textBox_salonYER
+            // txtSalonAd
             // 
-            textBox_salonYER.Font = new Font("Segoe UI", 12F);
-            textBox_salonYER.Location = new Point(189, 257);
-            textBox_salonYER.Multiline = true;
-            textBox_salonYER.Name = "textBox_salonYER";
-            textBox_salonYER.Size = new Size(240, 51);
-            textBox_salonYER.TabIndex = 29;
-            // 
-            // textBox_salonAD
-            // 
-            textBox_salonAD.Font = new Font("Segoe UI", 12F);
-            textBox_salonAD.Location = new Point(189, 183);
-            textBox_salonAD.Name = "textBox_salonAD";
-            textBox_salonAD.Size = new Size(240, 34);
-            textBox_salonAD.TabIndex = 28;
-            // 
-            // textBox_salonID
-            // 
-            textBox_salonID.Font = new Font("Segoe UI", 12F);
-            textBox_salonID.Location = new Point(195, 54);
-            textBox_salonID.Name = "textBox_salonID";
-            textBox_salonID.Size = new Size(240, 34);
-            textBox_salonID.TabIndex = 27;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label3.Location = new Point(45, 263);
-            label3.Name = "label3";
-            label3.Size = new Size(53, 28);
-            label3.TabIndex = 26;
-            label3.Text = "YER:";
+            txtSalonAd.Font = new Font("Segoe UI", 10F);
+            txtSalonAd.MaxLength = 50;
+            txtSalonAd.Location = new Point(150, 60);
+            txtSalonAd.Name = "txtSalonAd";
+            txtSalonAd.Size = new Size(240, 25);
+            txtSalonAd.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label2.Location = new Point(45, 189);
+            label2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            label2.Text = "Branş:";
+            label2.Location = new Point(20, 105);
             label2.Name = "label2";
-            label2.Size = new Size(46, 28);
-            label2.TabIndex = 25;
-            label2.Text = "AD:";
+            label2.TabIndex = 3;
+            // 
+            // cmbBrans
+            // 
+            cmbBrans.Font = new Font("Segoe UI", 10F);
+            cmbBrans.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbBrans.FormattingEnabled = true;
+            cmbBrans.Location = new Point(150, 102);
+            cmbBrans.Name = "cmbBrans";
+            cmbBrans.Size = new Size(240, 25);
+            cmbBrans.TabIndex = 4;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            label3.Text = "Kapasite:";
+            label3.Location = new Point(20, 147);
+            label3.Name = "label3";
+            label3.TabIndex = 5;
+            // 
+            // nudKapasite
+            // 
+            nudKapasite.Font = new Font("Segoe UI", 10F);
+            nudKapasite.Maximum = 10000;
+            nudKapasite.Minimum = 1;
+            nudKapasite.Value = new decimal(new int[] { 50, 0, 0, 0 });
+            nudKapasite.Location = new Point(150, 144);
+            nudKapasite.Name = "nudKapasite";
+            nudKapasite.Size = new Size(120, 25);
+            nudKapasite.TabIndex = 6;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label4.Location = new Point(45, 366);
+            label4.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            label4.Text = "Yer:";
+            label4.Location = new Point(20, 189);
             label4.Name = "label4";
-            label4.Size = new Size(109, 28);
-            label4.TabIndex = 31;
-            label4.Text = "KAPASİTE:";
+            label4.TabIndex = 7;
             // 
-            // textBox_salonKAPASITE
+            // txtYer
             // 
-            textBox_salonKAPASITE.Font = new Font("Segoe UI", 12F);
-            textBox_salonKAPASITE.Location = new Point(189, 360);
-            textBox_salonKAPASITE.Name = "textBox_salonKAPASITE";
-            textBox_salonKAPASITE.Size = new Size(147, 34);
-            textBox_salonKAPASITE.TabIndex = 32;
+            txtYer.Font = new Font("Segoe UI", 10F);
+            txtYer.MaxLength = 50;
+            txtYer.Location = new Point(150, 186);
+            txtYer.Name = "txtYer";
+            txtYer.Size = new Size(240, 25);
+            txtYer.TabIndex = 8;
             // 
-            // dataGridView1
+            // btnEkle
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(561, 54);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(548, 314);
-            dataGridView1.TabIndex = 33;
-            dataGridView1.CellClick += dataGridView1_CellClick;
+            btnEkle.BackColor = Color.DarkKhaki;
+            btnEkle.FlatStyle = FlatStyle.Flat;
+            btnEkle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnEkle.ForeColor = Color.White;
+            btnEkle.Text = "EKLE";
+            btnEkle.UseVisualStyleBackColor = false;
+            btnEkle.Location = new Point(20, 243);
+            btnEkle.Name = "btnEkle";
+            btnEkle.Size = new Size(180, 40);
+            btnEkle.TabIndex = 9;
+            btnEkle.Click += btnEkle_Click;
             // 
-            // button_listeleSalon
+            // btnGuncelle
             // 
-            button_listeleSalon.BackColor = Color.DarkKhaki;
-            button_listeleSalon.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_listeleSalon.ForeColor = SystemColors.Control;
-            button_listeleSalon.Location = new Point(841, 511);
-            button_listeleSalon.Name = "button_listeleSalon";
-            button_listeleSalon.Size = new Size(127, 53);
-            button_listeleSalon.TabIndex = 37;
-            button_listeleSalon.Text = "LİSTELE";
-            button_listeleSalon.UseVisualStyleBackColor = false;
-            button_listeleSalon.Click += button_listeleSalon_Click;
+            btnGuncelle.BackColor = Color.DarkKhaki;
+            btnGuncelle.FlatStyle = FlatStyle.Flat;
+            btnGuncelle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnGuncelle.ForeColor = Color.White;
+            btnGuncelle.Text = "GÜNCELLE";
+            btnGuncelle.UseVisualStyleBackColor = false;
+            btnGuncelle.Location = new Point(210, 243);
+            btnGuncelle.Name = "btnGuncelle";
+            btnGuncelle.Size = new Size(180, 40);
+            btnGuncelle.TabIndex = 10;
+            btnGuncelle.Click += btnGuncelle_Click;
             // 
-            // button_guncelleSalon
+            // btnSil
             // 
-            button_guncelleSalon.BackColor = Color.DarkKhaki;
-            button_guncelleSalon.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_guncelleSalon.ForeColor = SystemColors.Control;
-            button_guncelleSalon.Location = new Point(621, 511);
-            button_guncelleSalon.Name = "button_guncelleSalon";
-            button_guncelleSalon.Size = new Size(127, 53);
-            button_guncelleSalon.TabIndex = 36;
-            button_guncelleSalon.Text = "GÜNCELLE";
-            button_guncelleSalon.UseVisualStyleBackColor = false;
-            button_guncelleSalon.Click += button_guncelleSalon_Click;
+            btnSil.BackColor = Color.DarkKhaki;
+            btnSil.FlatStyle = FlatStyle.Flat;
+            btnSil.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnSil.ForeColor = Color.White;
+            btnSil.Text = "SİL";
+            btnSil.UseVisualStyleBackColor = false;
+            btnSil.Location = new Point(20, 291);
+            btnSil.Name = "btnSil";
+            btnSil.Size = new Size(180, 40);
+            btnSil.TabIndex = 11;
+            btnSil.Click += btnSil_Click;
             // 
-            // button_silSalon
+            // btnTemizle
             // 
-            button_silSalon.BackColor = Color.DarkKhaki;
-            button_silSalon.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_silSalon.ForeColor = SystemColors.Control;
-            button_silSalon.Location = new Point(403, 511);
-            button_silSalon.Name = "button_silSalon";
-            button_silSalon.Size = new Size(127, 53);
-            button_silSalon.TabIndex = 35;
-            button_silSalon.Text = "SİL";
-            button_silSalon.UseVisualStyleBackColor = false;
-            button_silSalon.Click += button_silSalon_Click;
+            btnTemizle.BackColor = Color.DarkKhaki;
+            btnTemizle.FlatStyle = FlatStyle.Flat;
+            btnTemizle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnTemizle.ForeColor = Color.White;
+            btnTemizle.Text = "TEMİZLE";
+            btnTemizle.UseVisualStyleBackColor = false;
+            btnTemizle.Location = new Point(210, 291);
+            btnTemizle.Name = "btnTemizle";
+            btnTemizle.Size = new Size(180, 40);
+            btnTemizle.TabIndex = 12;
+            btnTemizle.Click += btnTemizle_Click;
             // 
-            // button_ekleSalon
+            // lblKayitSayisi
             // 
-            button_ekleSalon.BackColor = Color.DarkKhaki;
-            button_ekleSalon.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            button_ekleSalon.ForeColor = SystemColors.Control;
-            button_ekleSalon.Location = new Point(189, 511);
-            button_ekleSalon.Name = "button_ekleSalon";
-            button_ekleSalon.Size = new Size(127, 53);
-            button_ekleSalon.TabIndex = 34;
-            button_ekleSalon.Text = "EKLE";
-            button_ekleSalon.UseVisualStyleBackColor = false;
-            button_ekleSalon.Click += button_ekleSalon_Click;
+            lblKayitSayisi.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblKayitSayisi.AutoSize = true;
+            lblKayitSayisi.ForeColor = SystemColors.GrayText;
+            lblKayitSayisi.Text = "";
+            lblKayitSayisi.Location = new Point(420, 538);
+            lblKayitSayisi.Name = "lblKayitSayisi";
+            lblKayitSayisi.TabIndex = 13;
             // 
-            // label5
+            // dgvSalonlar
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label5.Location = new Point(51, 119);
-            label5.Name = "label5";
-            label5.Size = new Size(111, 28);
-            label5.TabIndex = 39;
-            label5.Text = "BRANŞ ID:";
-            // 
-            // textBox1
-            // 
-            textBox1.Font = new Font("Segoe UI", 12F);
-            textBox1.Location = new Point(195, 119);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(240, 34);
-            textBox1.TabIndex = 38;
+            dgvSalonlar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvSalonlar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvSalonlar.Location = new Point(420, 60);
+            dgvSalonlar.Name = "dgvSalonlar";
+            dgvSalonlar.Size = new Size(640, 472);
+            dgvSalonlar.TabIndex = 14;
+            dgvSalonlar.CellClick += dgvSalonlar_CellClick;
             // 
             // SalonIslem
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1134, 608);
-            Controls.Add(label5);
-            Controls.Add(textBox1);
-            Controls.Add(button_listeleSalon);
-            Controls.Add(button_guncelleSalon);
-            Controls.Add(button_silSalon);
-            Controls.Add(button_ekleSalon);
-            Controls.Add(dataGridView1);
-            Controls.Add(textBox_salonKAPASITE);
+            BackColor = Color.WhiteSmoke;
+            ClientSize = new Size(1080, 560);
+            Controls.Add(dgvSalonlar);
+            Controls.Add(lblKayitSayisi);
+            Controls.Add(btnTemizle);
+            Controls.Add(btnSil);
+            Controls.Add(btnGuncelle);
+            Controls.Add(btnEkle);
+            Controls.Add(txtYer);
             Controls.Add(label4);
-            Controls.Add(label1);
-            Controls.Add(textBox_salonYER);
-            Controls.Add(textBox_salonAD);
-            Controls.Add(textBox_salonID);
+            Controls.Add(nudKapasite);
             Controls.Add(label3);
+            Controls.Add(cmbBrans);
             Controls.Add(label2);
+            Controls.Add(txtSalonAd);
+            Controls.Add(label1);
+            Controls.Add(lblBaslik);
+            MinimumSize = new Size(900, 480);
             Name = "SalonIslem";
-            Text = "SalonIslem";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Salon İşlemleri";
             Load += SalonIslem_Load;
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudKapasite).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvSalonlar).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
+        private Label lblBaslik;
         private Label label1;
-        private TextBox textBox_salonYER;
-        private TextBox textBox_salonAD;
-        private TextBox textBox_salonID;
-        private Label label3;
+        private TextBox txtSalonAd;
         private Label label2;
+        private ComboBox cmbBrans;
+        private Label label3;
+        private NumericUpDown nudKapasite;
         private Label label4;
-        private TextBox textBox_salonKAPASITE;
-        private DataGridView dataGridView1;
-        private Button button_listeleSalon;
-        private Button button_guncelleSalon;
-        private Button button_silSalon;
-        private Button button_ekleSalon;
-        private Label label5;
-        private TextBox textBox1;
+        private TextBox txtYer;
+        private Button btnEkle;
+        private Button btnGuncelle;
+        private Button btnSil;
+        private Button btnTemizle;
+        private Label lblKayitSayisi;
+        private DataGridView dgvSalonlar;
     }
 }

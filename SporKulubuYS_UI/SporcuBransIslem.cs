@@ -1,72 +1,110 @@
-﻿using SporKulubuYS_Service.Core;
+using SporKulubuYS_Service.Core;
 using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SporKulubuYS_UI
 {
+    /// <summary>Sporcuları branşlara kaydetme ekranı (çoka-çok ilişki).</summary>
     public partial class SporcuBransIslem : Form
     {
-        SporKulubuDB db;
-        SporcuService sporcuService;
-        BransService bransService;
-        SporcuBransService sporcuBransService;
+        private SporKulubuDB db = null!;
+        private ISporcuBransService sporcuBransService = null!;
+        private ISporcuService sporcuService = null!;
+        private IBransService bransService = null!;
+        private int seciliKayitId;
+
         public SporcuBransIslem()
         {
             InitializeComponent();
+            FormClosed += (_, _) => db?.Dispose();
         }
 
         private void SporcuBransIslem_Load(object sender, EventArgs e)
         {
             db = new SporKulubuDB();
+            sporcuBransService = new SporcuBransService(db);
             sporcuService = new SporcuService(db);
             bransService = new BransService(db);
-            sporcuBransService = new SporcuBransService(db);
+
+            UiYardimci.TabloAyarla(dgvKayitlar);
+
+            UiYardimci.Calistir(() =>
+            {
+                UiYardimci.ComboDoldur(cmbSporcu, sporcuService.Listele()
+                    .Select(s => new SecimOgesi(s.SporcuId, $"{s.SporcuAd} {s.SporcuSoyad}")));
+                UiYardimci.ComboDoldur(cmbBrans, bransService.Listele()
+                    .Select(b => new SecimOgesi(b.BransId, b.BransAd)));
+            });
+
+            Temizle();
+            Listele();
         }
 
-        public void Yenile()
+        private void Listele()
         {
-            dataGridView1.DataSource = sporcuService.Listele();
-            dataGridView2.DataSource = bransService.Listele();
-            dataGridView3.DataSource = sporcuBransService.Listele();
+            UiYardimci.Calistir(() =>
+            {
+                var liste = sporcuBransService.Listele()
+                    .Select(sb => new
+                    {
+                        Id = sb.SporcuBransId,
+                        Sporcu = $"{sb.Sporcu.SporcuAd} {sb.Sporcu.SporcuSoyad}",
+                        Brans = sb.Brans.BransAd
+                    });
+
+                UiYardimci.Bagla(dgvKayitlar, liste);
+                dgvKayitlar.Columns["Brans"]!.HeaderText = "Branş";
+                lblKayitSayisi.Text = $"Kayıt sayısı: {dgvKayitlar.Rows.Count}";
+            });
+        }
+
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+                sporcuBransService.Ekle(new SporcuBrans
+                {
+                    SporcuId = UiYardimci.ComboId(cmbSporcu),
+                    BransId = UiYardimci.ComboId(cmbBrans)
+                }), "Sporcu branşa kaydedildi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (seciliKayitId == 0)
+            {
+                UiYardimci.Uyari("Lütfen listeden bir kayıt seçiniz.");
+                return;
+            }
+
+            if (!UiYardimci.Onayla("Seçili sporcunun bu branştaki kaydı silinsin mi?"))
+                return;
+
+            bool basarili = UiYardimci.Calistir(() => sporcuBransService.Sil(seciliKayitId), "Kayıt silindi.");
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
             Temizle();
         }
 
-        public void Temizle()
+        private void dgvKayitlar_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            textBox_SPORCU_ID.Text = "";
-            textBox_BRANS2_ID.Text = "";
+            seciliKayitId = UiYardimci.SeciliId(dgvKayitlar, e.RowIndex);
+            if (seciliKayitId == 0) return;
+
+            var row = dgvKayitlar.Rows[e.RowIndex];
+            lblBilgi.Text = $"Seçili: {row.Cells["Sporcu"].Value} → {row.Cells["Brans"].Value}";
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void Temizle()
         {
-            textBox_BRANS2_ID.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-        }
-
-        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            textBox_SPORCU_ID.Text = dataGridView2.CurrentRow.Cells[0].Value.ToString();
-        }
-
-        private void button_ekleBS_Click(object sender, EventArgs e)
-        {
-            SporcuBrans sporcuBrans = new SporcuBrans();
-            sporcuBrans.BransId = Convert.ToInt32(textBox_BRANS2_ID.Text);
-            sporcuBrans.SporcuId = Convert.ToInt32(textBox_SPORCU_ID.Text);
-            sporcuBransService.Ekle(sporcuBrans);
-        }
-
-        private void button_listeleBS_Click(object sender, EventArgs e)
-        {
-            Yenile();
+            seciliKayitId = 0;
+            cmbSporcu.SelectedIndex = -1;
+            cmbBrans.SelectedIndex = -1;
+            lblBilgi.Text = "Sporcu ve branş seçip \"Branşa Kaydet\"e basın. Silmek için listeden kayıt seçin.";
+            dgvKayitlar.ClearSelection();
         }
     }
 }

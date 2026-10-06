@@ -1,106 +1,145 @@
-﻿using SporKulubuYS_Service.Core;
+using SporKulubuYS_Service.Core;
 using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SporKulubuYS_UI
 {
     public partial class AntrenorIslem : Form
     {
-        SporKulubuDB db;
-        AntrenorService antrenorService;
+        private SporKulubuDB db = null!;
+        private IAntrenorService antrenorService = null!;
+        private int seciliAntrenorId;
 
         public AntrenorIslem()
         {
             InitializeComponent();
+            FormClosed += (_, _) => db?.Dispose();
         }
 
         private void AntrenorIslem_Load(object sender, EventArgs e)
         {
             db = new SporKulubuDB();
             antrenorService = new AntrenorService(db);
-            Yenile();
+
+            dtpDogumTarihi.MaxDate = DateTime.Today;
+            UiYardimci.TabloAyarla(dgvAntrenorler);
+
+            Temizle();
+            Listele();
         }
 
-        public void Yenile()
+        private void Listele()
         {
-            var antrenorler = antrenorService.Listele();
-            dataGridView1.DataSource = antrenorler;
+            UiYardimci.Calistir(() =>
+            {
+                var liste = antrenorService.Listele(txtAra.Text)
+                    .Select(a => new
+                    {
+                        Id = a.AntrenorId,
+                        Ad = a.AntrenorAd,
+                        Soyad = a.AntrenorSoyad,
+                        Uzmanlik = a.Uzmanlık,
+                        DogumTarihi = a.AntrenorDogumTarihi.ToString("dd.MM.yyyy"),
+                        Ulke = a.Ulke,
+                        Branslar = string.Join(", ", a.BransAntrenorler.Select(ba => ba.Brans.BransAd))
+                    });
+
+                UiYardimci.Bagla(dgvAntrenorler, liste);
+                dgvAntrenorler.Columns["Uzmanlik"]!.HeaderText = "Uzmanlık";
+                dgvAntrenorler.Columns["DogumTarihi"]!.HeaderText = "Doğum Tarihi";
+                dgvAntrenorler.Columns["Ulke"]!.HeaderText = "Ülke";
+                dgvAntrenorler.Columns["Branslar"]!.HeaderText = "Branşlar";
+                lblKayitSayisi.Text = $"Kayıt sayısı: {dgvAntrenorler.Rows.Count}";
+            });
+        }
+
+        private Antrenor FormdanOku()
+        {
+            return new Antrenor
+            {
+                AntrenorId = seciliAntrenorId,
+                AntrenorAd = txtAd.Text,
+                AntrenorSoyad = txtSoyad.Text,
+                Uzmanlık = txtUzmanlik.Text,
+                AntrenorDogumTarihi = dtpDogumTarihi.Value.Date,
+                Ulke = txtUlke.Text
+            };
+        }
+
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                Antrenor antrenor = FormdanOku();
+                antrenor.AntrenorId = 0;
+                antrenorService.Ekle(antrenor);
+            }, "Antrenör eklendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(() =>
+            {
+                if (seciliAntrenorId == 0)
+                    throw new KuralHatasi("Lütfen listeden bir antrenör seçiniz.");
+                antrenorService.Guncelle(FormdanOku());
+            }, "Antrenör güncellendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (seciliAntrenorId == 0)
+            {
+                UiYardimci.Uyari("Lütfen listeden bir antrenör seçiniz.");
+                return;
+            }
+
+            if (!UiYardimci.Onayla($"{txtAd.Text} {txtSoyad.Text} silinsin mi?\n\nAntrenörün branş atamaları da silinecek."))
+                return;
+
+            bool basarili = UiYardimci.Calistir(() => antrenorService.Sil(seciliAntrenorId), "Antrenör silindi.");
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
             Temizle();
         }
 
-        public void Temizle()
+        private void txtAra_TextChanged(object sender, EventArgs e)
         {
-            textBox_antrenorID.Text = "";
-            textBox_antrenorAD.Text = "";
-            textBox_antrenorSOYAD.Text = "";
-            textBox_antrenorUZMANLIK.Text = "";
-            dateTimePickerAntrenor.Value = DateTime.Now;
-            textBox_antrenorULKE.Text = "";
+            Listele();
         }
 
-        private void dataGridView1_CellClick_1(object sender, DataGridViewCellEventArgs e)
+        private void dgvAntrenorler_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0) // Ensure the clicked cell is a valid row
-            {
-                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                textBox_antrenorID.Text = row.Cells[0].Value.ToString();
-                textBox_antrenorAD.Text = row.Cells[1].Value.ToString();
-                textBox_antrenorSOYAD.Text = row.Cells[2].Value.ToString();
-                textBox_antrenorUZMANLIK.Text = row.Cells[3].Value.ToString();
-                dateTimePickerAntrenor.Value = Convert.ToDateTime(row.Cells[4].Value);
-                textBox_antrenorULKE.Text = row.Cells[5].Value.ToString();
-            }
+            int id = UiYardimci.SeciliId(dgvAntrenorler, e.RowIndex);
+            if (id == 0) return;
+
+            Antrenor? antrenor = antrenorService.Getir(id);
+            if (antrenor == null) return;
+
+            seciliAntrenorId = antrenor.AntrenorId;
+            txtAd.Text = antrenor.AntrenorAd;
+            txtSoyad.Text = antrenor.AntrenorSoyad;
+            txtUzmanlik.Text = antrenor.Uzmanlık;
+            dtpDogumTarihi.Value = antrenor.AntrenorDogumTarihi;
+            txtUlke.Text = antrenor.Ulke;
         }
 
-        private void button_ekleAntrenor_Click(object sender, EventArgs e)
+        private void Temizle()
         {
-            Antrenor antrenor = new Antrenor();
-            antrenor.AntrenorAd = textBox_antrenorAD.Text;
-            antrenor.AntrenorSoyad = textBox_antrenorSOYAD.Text;
-            antrenor.Uzmanlık = textBox_antrenorUZMANLIK.Text;
-            antrenor.AntrenorDogumTarihi = dateTimePickerAntrenor.Value;
-            antrenor.Ulke = textBox_antrenorULKE.Text;
-
-            antrenorService.Ekle(antrenor);
-            Yenile();
-        }
-
-        private void button_silAntrenor_Click(object sender, EventArgs e)
-        {
-            int AntrenorId = Convert.ToInt32(textBox_antrenorID.Text);
-            antrenorService.Sil(AntrenorId);
-            Yenile();
-        }
-
-        private void button_guncelleAntrenor_Click(object sender, EventArgs e)
-        {
-            Antrenor antrenor = new Antrenor();
-            antrenor.AntrenorId = Convert.ToInt32(textBox_antrenorID.Text);
-            antrenor.AntrenorAd = textBox_antrenorAD.Text;
-            antrenor.AntrenorSoyad = textBox_antrenorSOYAD.Text;
-            antrenor.Uzmanlık = textBox_antrenorUZMANLIK.Text;
-            antrenor.AntrenorDogumTarihi = dateTimePickerAntrenor.Value;
-            antrenor.Ulke = textBox_antrenorULKE.Text;
-
-            antrenorService.Güncelle(antrenor);
-            Yenile();
-        }
-
-        private void button_listeleAntrenor_Click(object sender, EventArgs e)
-        {
-            Yenile();
+            seciliAntrenorId = 0;
+            txtAd.Clear();
+            txtSoyad.Clear();
+            txtUzmanlik.Clear();
+            txtUlke.Clear();
+            dtpDogumTarihi.Value = DateTime.Today.AddYears(-30);
+            dgvAntrenorler.ClearSelection();
+            txtAd.Focus();
         }
     }
-
 }
-
-

@@ -1,88 +1,111 @@
-﻿using SporKulubuYS_Service.Core;
+using SporKulubuYS_Service.Core;
 using SporKulubuYS_Service.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SporKulubuYS_UI
 {
     public partial class BransIslem : Form
     {
-        SporKulubuDB db;
-        BransService bransService;
+        private SporKulubuDB db = null!;
+        private IBransService bransService = null!;
+        private int seciliBransId;
 
         public BransIslem()
         {
             InitializeComponent();
+            FormClosed += (_, _) => db?.Dispose();
         }
 
         private void BransIslem_Load(object sender, EventArgs e)
         {
             db = new SporKulubuDB();
             bransService = new BransService(db);
-            Yenile();
+
+            UiYardimci.TabloAyarla(dgvBranslar);
+            Temizle();
+            Listele();
         }
 
-        public void Yenile()
+        private void Listele()
         {
-            var branslar = bransService.Listele();
-            dataGridView1.DataSource = branslar;
+            UiYardimci.Calistir(() =>
+            {
+                var liste = bransService.Listele()
+                    .Select(b => new
+                    {
+                        Id = b.BransId,
+                        Brans = b.BransAd,
+                        Sporcu = b.SporcuBranslar.Count,
+                        Antrenor = b.BransAntrenorler.Count,
+                        Salon = b.Salonlar.Count,
+                        Etkinlik = b.Etkinlikler.Count
+                    });
+
+                UiYardimci.Bagla(dgvBranslar, liste);
+                dgvBranslar.Columns["Brans"]!.HeaderText = "Branş";
+                dgvBranslar.Columns["Sporcu"]!.HeaderText = "Sporcu Sayısı";
+                dgvBranslar.Columns["Antrenor"]!.HeaderText = "Antrenör Sayısı";
+                dgvBranslar.Columns["Salon"]!.HeaderText = "Salon Sayısı";
+                dgvBranslar.Columns["Etkinlik"]!.HeaderText = "Etkinlik Sayısı";
+                lblKayitSayisi.Text = $"Kayıt sayısı: {dgvBranslar.Rows.Count}";
+            });
+        }
+
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(
+                () => bransService.Ekle(new Brans { BransAd = txtBransAd.Text }),
+                "Branş eklendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            bool basarili = UiYardimci.Calistir(
+                () => bransService.Guncelle(new Brans { BransId = seciliBransId, BransAd = txtBransAd.Text }),
+                "Branş güncellendi.");
+
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (seciliBransId == 0)
+            {
+                UiYardimci.Uyari("Lütfen listeden bir branş seçiniz.");
+                return;
+            }
+
+            if (!UiYardimci.Onayla($"'{txtBransAd.Text}' branşı silinsin mi?"))
+                return;
+
+            bool basarili = UiYardimci.Calistir(() => bransService.Sil(seciliBransId), "Branş silindi.");
+            if (basarili) { Temizle(); Listele(); }
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
             Temizle();
         }
 
-        public void Temizle()
+        private void dgvBranslar_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            textBox_bransID.Text = "";
-            textBox_bransAD.Text = "";
+            int id = UiYardimci.SeciliId(dgvBranslar, e.RowIndex);
+            if (id == 0) return;
+
+            Brans? brans = bransService.Getir(id);
+            if (brans == null) return;
+
+            seciliBransId = brans.BransId;
+            txtBransAd.Text = brans.BransAd;
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void Temizle()
         {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                textBox_bransID.Text = row.Cells[0].Value.ToString();
-                textBox_bransAD.Text = row.Cells[1].Value.ToString();
-            }
-        }
-
-        private void button_ekleBrans_Click(object sender, EventArgs e)
-        {
-            Brans brans = new Brans();
-            brans.BransAd = textBox_bransAD.Text;
-
-            bransService.Ekle(brans);
-            Yenile();
-        }
-
-        private void button_silBrans_Click(object sender, EventArgs e)
-        {
-            int BransId = Convert.ToInt32(textBox_bransID.Text);
-            bransService.Sil(BransId);
-            Yenile();
-        }
-
-        private void button_guncelleBrans_Click(object sender, EventArgs e)
-        {
-            Brans brans = new Brans();
-            brans.BransId = Convert.ToInt32(textBox_bransID.Text);
-            brans.BransAd = textBox_bransAD.Text;
-
-            bransService.Güncelle(brans);
-            Yenile();
-        }
-
-        private void button_listeleBrans_Click(object sender, EventArgs e)
-        {
-            Yenile();
+            seciliBransId = 0;
+            txtBransAd.Clear();
+            dgvBranslar.ClearSelection();
+            txtBransAd.Focus();
         }
     }
-
 }

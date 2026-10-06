@@ -28,130 +28,254 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button_Antrenor = new Button();
-            button_Brans = new Button();
-            button_Etkinlik = new Button();
-            button_Salon = new Button();
-            button_Sporcu = new Button();
-            button_BA = new Button();
-            button_SB = new Button();
+            lblBaslik = new Label();
+            lblAltBaslik = new Label();
+            btnSporcular = new Button();
+            btnAntrenorler = new Button();
+            btnBranslar = new Button();
+            btnSalonlar = new Button();
+            btnEtkinlikler = new Button();
+            btnSporcuBrans = new Button();
+            btnBransAntrenor = new Button();
+            lblKartSporcu = new Label();
+            lblKartAntrenor = new Label();
+            lblKartBrans = new Label();
+            lblKartEtkinlik = new Label();
+            lblYaklasan = new Label();
+            dgvYaklasan = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dgvYaklasan).BeginInit();
             SuspendLayout();
             // 
-            // button_Antrenor
+            // lblBaslik
             // 
-            button_Antrenor.BackColor = Color.MediumAquamarine;
-            button_Antrenor.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_Antrenor.ForeColor = SystemColors.ActiveCaptionText;
-            button_Antrenor.Location = new Point(236, 92);
-            button_Antrenor.Name = "button_Antrenor";
-            button_Antrenor.Size = new Size(170, 60);
-            button_Antrenor.TabIndex = 0;
-            button_Antrenor.Text = "ANTRENÖRLER";
-            button_Antrenor.UseVisualStyleBackColor = false;
-            button_Antrenor.Click += button_Antrenor_Click;
+            lblBaslik.AutoSize = true;
+            lblBaslik.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblBaslik.ForeColor = Color.DarkOliveGreen;
+            lblBaslik.Text = "Spor Kulübü Yönetim Sistemi";
+            lblBaslik.Location = new Point(30, 20);
+            lblBaslik.Name = "lblBaslik";
+            lblBaslik.TabIndex = 0;
             // 
-            // button_Brans
+            // lblAltBaslik
             // 
-            button_Brans.BackColor = Color.MediumAquamarine;
-            button_Brans.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_Brans.ForeColor = SystemColors.ActiveCaptionText;
-            button_Brans.Location = new Point(236, 205);
-            button_Brans.Name = "button_Brans";
-            button_Brans.Size = new Size(170, 60);
-            button_Brans.TabIndex = 1;
-            button_Brans.Text = "BRANŞLAR";
-            button_Brans.UseVisualStyleBackColor = false;
-            button_Brans.Click += button_Brans_Click;
+            lblAltBaslik.AutoSize = true;
+            lblAltBaslik.ForeColor = SystemColors.GrayText;
+            lblAltBaslik.Text = "Sporcu, antrenör, branş, salon ve etkinlik yönetimi";
+            lblAltBaslik.Location = new Point(33, 62);
+            lblAltBaslik.Name = "lblAltBaslik";
+            lblAltBaslik.TabIndex = 1;
             // 
-            // button_Etkinlik
+            // btnSporcular
             // 
-            button_Etkinlik.BackColor = Color.MediumAquamarine;
-            button_Etkinlik.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_Etkinlik.ForeColor = SystemColors.ActiveCaptionText;
-            button_Etkinlik.Location = new Point(236, 322);
-            button_Etkinlik.Name = "button_Etkinlik";
-            button_Etkinlik.Size = new Size(170, 60);
-            button_Etkinlik.TabIndex = 2;
-            button_Etkinlik.Text = "ETKİNLİKLER";
-            button_Etkinlik.UseVisualStyleBackColor = false;
-            button_Etkinlik.Click += button_Etkinlik_Click;
+            btnSporcular.BackColor = Color.MediumAquamarine;
+            btnSporcular.FlatStyle = FlatStyle.Flat;
+            btnSporcular.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnSporcular.ForeColor = Color.White;
+            btnSporcular.Text = "SPORCULAR";
+            btnSporcular.UseVisualStyleBackColor = false;
+            btnSporcular.Location = new Point(30, 105);
+            btnSporcular.Name = "btnSporcular";
+            btnSporcular.Size = new Size(240, 52);
+            btnSporcular.TabIndex = 2;
+            btnSporcular.Click += btnSporcular_Click;
             // 
-            // button_Salon
+            // btnAntrenorler
             // 
-            button_Salon.BackColor = Color.MediumAquamarine;
-            button_Salon.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_Salon.ForeColor = SystemColors.ActiveCaptionText;
-            button_Salon.Location = new Point(635, 92);
-            button_Salon.Name = "button_Salon";
-            button_Salon.Size = new Size(170, 60);
-            button_Salon.TabIndex = 3;
-            button_Salon.Text = "SALONLAR";
-            button_Salon.UseVisualStyleBackColor = false;
-            button_Salon.Click += button_Salon_Click;
+            btnAntrenorler.BackColor = Color.MediumAquamarine;
+            btnAntrenorler.FlatStyle = FlatStyle.Flat;
+            btnAntrenorler.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnAntrenorler.ForeColor = Color.White;
+            btnAntrenorler.Text = "ANTRENÖRLER";
+            btnAntrenorler.UseVisualStyleBackColor = false;
+            btnAntrenorler.Location = new Point(30, 167);
+            btnAntrenorler.Name = "btnAntrenorler";
+            btnAntrenorler.Size = new Size(240, 52);
+            btnAntrenorler.TabIndex = 3;
+            btnAntrenorler.Click += btnAntrenorler_Click;
             // 
-            // button_Sporcu
+            // btnBranslar
             // 
-            button_Sporcu.BackColor = Color.MediumAquamarine;
-            button_Sporcu.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_Sporcu.ForeColor = SystemColors.ActiveCaptionText;
-            button_Sporcu.Location = new Point(635, 205);
-            button_Sporcu.Name = "button_Sporcu";
-            button_Sporcu.Size = new Size(170, 60);
-            button_Sporcu.TabIndex = 4;
-            button_Sporcu.Text = "SPORCULAR";
-            button_Sporcu.UseVisualStyleBackColor = false;
-            button_Sporcu.Click += button_Sporcu_Click;
+            btnBranslar.BackColor = Color.MediumAquamarine;
+            btnBranslar.FlatStyle = FlatStyle.Flat;
+            btnBranslar.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnBranslar.ForeColor = Color.White;
+            btnBranslar.Text = "BRANŞLAR";
+            btnBranslar.UseVisualStyleBackColor = false;
+            btnBranslar.Location = new Point(30, 229);
+            btnBranslar.Name = "btnBranslar";
+            btnBranslar.Size = new Size(240, 52);
+            btnBranslar.TabIndex = 4;
+            btnBranslar.Click += btnBranslar_Click;
             // 
-            // button_BA
+            // btnSalonlar
             // 
-            button_BA.BackColor = Color.MediumAquamarine;
-            button_BA.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_BA.Location = new Point(635, 322);
-            button_BA.Name = "button_BA";
-            button_BA.Size = new Size(170, 60);
-            button_BA.TabIndex = 5;
-            button_BA.Text = "BRANŞ ANTRENÖR";
-            button_BA.UseVisualStyleBackColor = false;
-            button_BA.Click += button_BA_Click_1;
+            btnSalonlar.BackColor = Color.MediumAquamarine;
+            btnSalonlar.FlatStyle = FlatStyle.Flat;
+            btnSalonlar.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnSalonlar.ForeColor = Color.White;
+            btnSalonlar.Text = "SALONLAR";
+            btnSalonlar.UseVisualStyleBackColor = false;
+            btnSalonlar.Location = new Point(30, 291);
+            btnSalonlar.Name = "btnSalonlar";
+            btnSalonlar.Size = new Size(240, 52);
+            btnSalonlar.TabIndex = 5;
+            btnSalonlar.Click += btnSalonlar_Click;
             // 
-            // button_SB
+            // btnEtkinlikler
             // 
-            button_SB.BackColor = Color.MediumAquamarine;
-            button_SB.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 162);
-            button_SB.Location = new Point(448, 453);
-            button_SB.Name = "button_SB";
-            button_SB.Size = new Size(170, 60);
-            button_SB.TabIndex = 6;
-            button_SB.Text = "SPORCU BRANŞ";
-            button_SB.UseVisualStyleBackColor = false;
-            button_SB.Click += button_SB_Click;
+            btnEtkinlikler.BackColor = Color.MediumAquamarine;
+            btnEtkinlikler.FlatStyle = FlatStyle.Flat;
+            btnEtkinlikler.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnEtkinlikler.ForeColor = Color.White;
+            btnEtkinlikler.Text = "ETKİNLİKLER";
+            btnEtkinlikler.UseVisualStyleBackColor = false;
+            btnEtkinlikler.Location = new Point(30, 353);
+            btnEtkinlikler.Name = "btnEtkinlikler";
+            btnEtkinlikler.Size = new Size(240, 52);
+            btnEtkinlikler.TabIndex = 6;
+            btnEtkinlikler.Click += btnEtkinlikler_Click;
+            // 
+            // btnSporcuBrans
+            // 
+            btnSporcuBrans.BackColor = Color.MediumAquamarine;
+            btnSporcuBrans.FlatStyle = FlatStyle.Flat;
+            btnSporcuBrans.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnSporcuBrans.ForeColor = Color.White;
+            btnSporcuBrans.Text = "SPORCU – BRANŞ";
+            btnSporcuBrans.UseVisualStyleBackColor = false;
+            btnSporcuBrans.Location = new Point(30, 415);
+            btnSporcuBrans.Name = "btnSporcuBrans";
+            btnSporcuBrans.Size = new Size(240, 52);
+            btnSporcuBrans.TabIndex = 7;
+            btnSporcuBrans.Click += btnSporcuBrans_Click;
+            // 
+            // btnBransAntrenor
+            // 
+            btnBransAntrenor.BackColor = Color.MediumAquamarine;
+            btnBransAntrenor.FlatStyle = FlatStyle.Flat;
+            btnBransAntrenor.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnBransAntrenor.ForeColor = Color.White;
+            btnBransAntrenor.Text = "BRANŞ – ANTRENÖR";
+            btnBransAntrenor.UseVisualStyleBackColor = false;
+            btnBransAntrenor.Location = new Point(30, 477);
+            btnBransAntrenor.Name = "btnBransAntrenor";
+            btnBransAntrenor.Size = new Size(240, 52);
+            btnBransAntrenor.TabIndex = 8;
+            btnBransAntrenor.Click += btnBransAntrenor_Click;
+            // 
+            // lblKartSporcu
+            // 
+            lblKartSporcu.BackColor = Color.White;
+            lblKartSporcu.BorderStyle = BorderStyle.FixedSingle;
+            lblKartSporcu.Font = new Font("Segoe UI", 11F);
+            lblKartSporcu.Text = "Sporcu\n-";
+            lblKartSporcu.TextAlign = ContentAlignment.MiddleCenter;
+            lblKartSporcu.Location = new Point(300, 105);
+            lblKartSporcu.Name = "lblKartSporcu";
+            lblKartSporcu.Size = new Size(155, 72);
+            lblKartSporcu.TabIndex = 9;
+            // 
+            // lblKartAntrenor
+            // 
+            lblKartAntrenor.BackColor = Color.White;
+            lblKartAntrenor.BorderStyle = BorderStyle.FixedSingle;
+            lblKartAntrenor.Font = new Font("Segoe UI", 11F);
+            lblKartAntrenor.Text = "Antrenör\n-";
+            lblKartAntrenor.TextAlign = ContentAlignment.MiddleCenter;
+            lblKartAntrenor.Location = new Point(470, 105);
+            lblKartAntrenor.Name = "lblKartAntrenor";
+            lblKartAntrenor.Size = new Size(155, 72);
+            lblKartAntrenor.TabIndex = 10;
+            // 
+            // lblKartBrans
+            // 
+            lblKartBrans.BackColor = Color.White;
+            lblKartBrans.BorderStyle = BorderStyle.FixedSingle;
+            lblKartBrans.Font = new Font("Segoe UI", 11F);
+            lblKartBrans.Text = "Branş\n-";
+            lblKartBrans.TextAlign = ContentAlignment.MiddleCenter;
+            lblKartBrans.Location = new Point(640, 105);
+            lblKartBrans.Name = "lblKartBrans";
+            lblKartBrans.Size = new Size(155, 72);
+            lblKartBrans.TabIndex = 11;
+            // 
+            // lblKartEtkinlik
+            // 
+            lblKartEtkinlik.BackColor = Color.White;
+            lblKartEtkinlik.BorderStyle = BorderStyle.FixedSingle;
+            lblKartEtkinlik.Font = new Font("Segoe UI", 11F);
+            lblKartEtkinlik.Text = "Yaklaşan Etkinlik\n-";
+            lblKartEtkinlik.TextAlign = ContentAlignment.MiddleCenter;
+            lblKartEtkinlik.Location = new Point(810, 105);
+            lblKartEtkinlik.Name = "lblKartEtkinlik";
+            lblKartEtkinlik.Size = new Size(155, 72);
+            lblKartEtkinlik.TabIndex = 12;
+            // 
+            // lblYaklasan
+            // 
+            lblYaklasan.AutoSize = true;
+            lblYaklasan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblYaklasan.Text = "Yaklaşan Etkinlikler";
+            lblYaklasan.Location = new Point(300, 200);
+            lblYaklasan.Name = "lblYaklasan";
+            lblYaklasan.TabIndex = 13;
+            // 
+            // dgvYaklasan
+            // 
+            dgvYaklasan.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvYaklasan.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvYaklasan.Location = new Point(300, 228);
+            dgvYaklasan.Name = "dgvYaklasan";
+            dgvYaklasan.Size = new Size(670, 347);
+            dgvYaklasan.TabIndex = 14;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1071, 655);
-            Controls.Add(button_SB);
-            Controls.Add(button_BA);
-            Controls.Add(button_Sporcu);
-            Controls.Add(button_Salon);
-            Controls.Add(button_Etkinlik);
-            Controls.Add(button_Brans);
-            Controls.Add(button_Antrenor);
+            BackColor = Color.WhiteSmoke;
+            ClientSize = new Size(1000, 600);
+            Controls.Add(dgvYaklasan);
+            Controls.Add(lblYaklasan);
+            Controls.Add(lblKartEtkinlik);
+            Controls.Add(lblKartBrans);
+            Controls.Add(lblKartAntrenor);
+            Controls.Add(lblKartSporcu);
+            Controls.Add(btnBransAntrenor);
+            Controls.Add(btnSporcuBrans);
+            Controls.Add(btnEtkinlikler);
+            Controls.Add(btnSalonlar);
+            Controls.Add(btnBranslar);
+            Controls.Add(btnAntrenorler);
+            Controls.Add(btnSporcular);
+            Controls.Add(lblAltBaslik);
+            Controls.Add(lblBaslik);
+            MinimumSize = new Size(1000, 620);
             Name = "Form1";
-            Text = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Spor Kulübü Yönetim Sistemi";
             Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvYaklasan).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private Button button_Antrenor;
-        private Button button_Brans;
-        private Button button_Etkinlik;
-        private Button button_Salon;
-        private Button button_Sporcu;
-        private Button button_BA;
-        private Button button_SB;
+        private Label lblBaslik;
+        private Label lblAltBaslik;
+        private Button btnSporcular;
+        private Button btnAntrenorler;
+        private Button btnBranslar;
+        private Button btnSalonlar;
+        private Button btnEtkinlikler;
+        private Button btnSporcuBrans;
+        private Button btnBransAntrenor;
+        private Label lblKartSporcu;
+        private Label lblKartAntrenor;
+        private Label lblKartBrans;
+        private Label lblKartEtkinlik;
+        private Label lblYaklasan;
+        private DataGridView dgvYaklasan;
     }
 }
